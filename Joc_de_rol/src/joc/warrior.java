@@ -11,8 +11,9 @@ package joc;
  */
 public class warrior extends player{
 
-        public warrior() {
-            super();
+        public warrior(String name, int attackPoints, int defensePoints, int life) {
+            
+            super(name, attackPoints, defensePoints, life);
             
             System.out.println("CONSTRUCTOR -> he creat un warrior");
         }
