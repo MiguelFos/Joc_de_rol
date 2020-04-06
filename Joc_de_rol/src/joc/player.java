@@ -62,19 +62,12 @@ abstract public class player{
         System.out.println("//      ATAC:");
        
        
-            y.hit(attackPoints);
-            if (y.life<=0) {
-            
-        }else{
-             this.hit(y.attackPoints);   
+        y.hit(attackPoints);
+        
+            if (y.life>0) {
+            this.hit(y.attackPoints);
             }
-            
-        
-        
-        
-        
-        
-        
+         
         System.out.println("//      DESPRES DE L'ATAC:");
         System.out.println(this);
         System.out.println(y);
@@ -85,7 +78,7 @@ abstract public class player{
     protected void hit (int attackPoints){
         if (this.life<=0) {
             System.out.println("No hay ataque por que no tiene puntos de vida");
-        }else if(this.life>0){
+        }else{
             System.out.println(this.name+" és colpejat amb "+attackPoints+" punt i es defén amb "+this.defensePoints+". Vides: "+this.life+" - "+
                 +(attackPoints-this.defensePoints)+" = "+(this.life-(attackPoints-this.defensePoints)));
             //System.out.println("puntos de vida: " + (this.life-(attackPoints-this.defensePoints)));

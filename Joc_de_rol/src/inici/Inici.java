@@ -32,11 +32,7 @@ public class Inici {
         System.out.println(C);
         System.out.println("");
         
-        
-        
-        
-        
-        
+        //ATAQUES
         A.attack(B);
         B.attack(A);
         A.attack(B);
