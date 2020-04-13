@@ -1,21 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package joc;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 
 /**
  *
- * @author damsp
+ * @author Miguel
  */
-abstract public class player {
+abstract public class player implements Iterable, Cloneable {
 
     private String name;
     private int attackPoints;
     private int defensePoints;
     private int life;
     private int reinicioLife;
+    private ArrayList<team> teams = new ArrayList<>();
+    private int posicio = 0;
 
     public player() {
     }
@@ -48,7 +49,14 @@ abstract public class player {
 
     @Override
     public String toString() {
-        return name + " PA:" + attackPoints + " /  PD:" + defensePoints + " / PV:" + life;
+        posicio = 0;
+        int contador = 0;
+        while (posicio < this.teams.size()) {
+            contador++;
+            posicio++;
+        }
+
+        return name + " PA:" + attackPoints + " /  PD:" + defensePoints + " / PV:" + life + " (pertany a " + contador + " equips)";
     }
 
     public void attack(player y) {
@@ -117,4 +125,110 @@ abstract public class player {
         System.out.println("Personatge " + this.getName() + " \nreiniciat per a noves lluites");
         System.out.println(this);
     }
+
+    public void add(team t) {
+        this.teams.add(t);
+    }
+
+    @Override
+    public Iterator<team> iterator() {
+        return new IteratorDEquips();
+    }
+
+    protected class IteratorDEquips implements Iterator<team> {
+
+        private int posicio = 0;
+
+        @Override
+        public boolean hasNext() {
+            return posicio < teams.size();
+        }
+
+        @Override
+        public team next() {
+            return teams.get(posicio++);
+        }
+
+        @Override
+        public void remove() {
+            int eliminar = posicio - 1;
+            if (eliminar < 0) {
+                return;
+            }
+            if (eliminar < teams.size()) {
+                teams.remove(posicio - 1);
+            }
+        }
+
+        public void consulta() {
+
+            int consulta = posicio - 1;
+            if (consulta < 0) {
+                return;
+            }
+            if (consulta < teams.size()) {
+                teams.get(posicio - 1);
+            }
+
+            System.out.println(posicio - 1);
+        }
+
+        public int calculaEquipos() {
+            int calcula = 0;
+            int contador = 0;
+            while (calcula < teams.size()) {
+                contador++;
+            }
+            return contador;
+        }
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + this.attackPoints;
+        hash = 53 * hash + this.defensePoints;
+        hash = 53 * hash + this.life;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final player other = (player) obj;
+        if (this.attackPoints != other.attackPoints) {
+            return false;
+        }
+        if (this.defensePoints != other.defensePoints) {
+            return false;
+        }
+        if (this.life != other.life) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public player clone() {
+        player nou = null;
+
+        try {
+            nou = (player) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            System.out.println("Error de clonació");
+        }
+        
+        return nou;
+    }
+
 }
