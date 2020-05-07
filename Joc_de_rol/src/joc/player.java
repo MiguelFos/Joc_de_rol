@@ -10,13 +10,14 @@ import java.util.Objects;
  */
 abstract public class player implements Iterable, Cloneable {
 
-    private String name;
-    private int attackPoints;
-    private int defensePoints;
-    private int life;
+    protected String name;
+    protected int attackPoints;
+    protected int defensePoints;
+    protected int life;
     private int reinicioLife;
-    private ArrayList<team> teams = new ArrayList<>();
+    private ArrayList<team> teams;
     private int posicio = 0;
+    private ArrayList<item> items;
 
     public player() {
     }
@@ -27,7 +28,11 @@ abstract public class player implements Iterable, Cloneable {
         this.defensePoints = defensePoints;
         this.life = life;
 
+        this.teams = new ArrayList<>();
+
         reinicioLife = life;
+
+        this.items = new ArrayList<>();
 
     }
 
@@ -49,14 +54,18 @@ abstract public class player implements Iterable, Cloneable {
 
     @Override
     public String toString() {
-        posicio = 0;
-        int contador = 0;
-        while (posicio < this.teams.size()) {
-            contador++;
-            posicio++;
+        String litem = "";
+        if (items.size() > 0) {
+            litem = "\t-";
+            for (item i : items) {
+                litem = litem + i + "\n\t-";
+            }
+            litem = litem.substring(0, litem.length() - 1);
         }
 
-        return name + " PA:" + attackPoints + " /  PD:" + defensePoints + " / PV:" + life + " (pertany a " + contador + " equips)";
+        //litem=litem.substring(litem.length()-1, litem.length());
+        return name + " PA:" + attackPoints + " /  PD:" + defensePoints + " / PV:" + life
+                + " (pertany a " + teams.size() + " equips)\n" + litem;
     }
 
     public void attack(player y) {
@@ -67,13 +76,15 @@ abstract public class player implements Iterable, Cloneable {
         System.out.println(y);
 
         System.out.println("//      ATAC:");
+        //int BAAA = aplicarBonusAttack(y);
 
-        y.hit(attackPoints);
-
-        if (y.life > 0) {
-            this.hit(y.attackPoints);
+        y.hit(this.aplicarBonusAttack());
+        
+        if (this.life > 0) {
+            this.hit(y.aplicarBonusAttack());
+           
         }
-
+        System.out.println("");
         System.out.println("//      DESPRES DE L'ATAC:");
         System.out.println(this);
         System.out.println(y);
@@ -83,19 +94,43 @@ abstract public class player implements Iterable, Cloneable {
 
     }
 
-    protected void hit(int attackPoints) {
-
+    public int aplicarBonusAttack() {
+        int BA = 0;//Bonus attack sense attackpoints
+        int BAAA = 0;//Bonus attack amb attackpoints
+        for (int i=0;i<this.items.size();i++) {
+            BA = BA + this.items.get(i).attackBonus;
+        }
+        BAAA = this.attackPoints + BA;
+        return BAAA;
+    }
+    
+    public int aplicarBonusDefense() {
+        int BD = 0;//Bonus defense sense defensepoints
+        int BDAA = 0;//Bonus defense amb defensepoints
+        for (int i=0;i<items.size();i++) {
+            BD = BD + this.items.get(i).defenseBonus;
+        }
+        BDAA = this.defensePoints + BD;
+        return BDAA;
+    }
+    protected void hit(int attackpoints) {
+        
+        int bonusD=this.aplicarBonusDefense();//defensePoints + el bonus de defensa
+        if (bonusD<0) {
+            bonusD=0;
+        }
+        
+        
         if (this.life <= 0) {
             System.out.println("No hi ha atac per que no hi ha punts de vida");
         } else {
-            System.out.println(this.name + " és colpejat amb " + attackPoints + " punts i es defén amb " + this.defensePoints + ". Vides: " + this.life + " - "
-                    + +(attackPoints - this.defensePoints) + " = " + (this.life - (attackPoints - this.defensePoints)));
-            //System.out.println("puntos de vida: " + (this.life-(attackPoints-this.defensePoints)));
-            if ((this.life - (attackPoints - this.defensePoints)) > 0) {
+            System.out.println(this.name + " és colpejat amb " + attackpoints + " punts i es defén amb " + bonusD + ". Vides: " + this.life + " - "
+                    +(attackpoints - bonusD) + " = " + (this.life - (attackpoints - bonusD)));
+            if ((this.life - (attackpoints - bonusD)) > 0) {
             } else {
                 System.out.println("El jugador " + this.name + " ha muerto.");
             }
-            this.life = this.life - (attackPoints - this.defensePoints);
+            this.life = this.life - (attackpoints - bonusD);
             if (this.life < 0) {
                 this.life = 0;
             }
@@ -103,31 +138,46 @@ abstract public class player implements Iterable, Cloneable {
         }
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAttackPoints(int attackPoints) {
-        this.attackPoints = attackPoints;
-    }
-
-    public void setDefensePoints(int defensePoints) {
-        this.defensePoints = defensePoints;
-    }
-
-    public void setLife(int life) {
-        this.life = life;
-    }
-
     //Métode per a reiniciar jugadors per a noves lluites
     public void reinicio() {
-        this.setLife(reinicioLife);
+        System.out.println("");
+        this.life = reinicioLife;
         System.out.println("Personatge " + this.getName() + " \nreiniciat per a noves lluites");
         System.out.println(this);
     }
 
-    public void add(team t) {
+    public void afegir(team t) {
+
+        if (teams.contains(t)) {
+            return;
+        }
+
         this.teams.add(t);
+        t.afegir(this);
+    }
+
+    public void eliminar(team t) {
+
+        if (teams.contains(t)) {
+            teams.remove(t);
+            t.eliminar(this);
+        }
+
+    }
+
+    public void afegirItem(item I) {
+        if (I.propietari == false) {
+            items.add(I);
+            I.propietari = true;
+        } else {
+            System.out.println("No es pot asignar " + I.name + " a " + this.name + ", ja te propietari");
+        }
+
+    }
+
+    public void eliminarItem(item I) {
+        items.remove(I);
+        I.propietari = false;
     }
 
     @Override
@@ -173,15 +223,14 @@ abstract public class player implements Iterable, Cloneable {
             System.out.println(posicio - 1);
         }
 
-        public int calculaEquipos() {
-            int calcula = 0;
-            int contador = 0;
-            while (calcula < teams.size()) {
-                contador++;
-            }
-            return contador;
-        }
-
+//        public int calculaEquipos() {
+//            int calcula = 0;
+//            int contador = 0;
+//            while (calcula < teams.size()) {
+//                contador++;
+//            }
+//            return contador;
+//        }
     }
 
     @Override
@@ -227,7 +276,7 @@ abstract public class player implements Iterable, Cloneable {
         } catch (CloneNotSupportedException ex) {
             System.out.println("Error de clonació");
         }
-        
+
         return nou;
     }
 

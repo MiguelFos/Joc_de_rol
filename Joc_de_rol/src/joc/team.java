@@ -12,23 +12,38 @@ public class team implements Iterable, Cloneable {
 
     private String nameTeam;
 
-    private ArrayList<player> players = new ArrayList<>();
+    private ArrayList<player> players;
 
     public team(String name) {
         this.nameTeam = name;
+        this.players = new ArrayList<>();
     }
 
     public String getNameTeam() {
         return nameTeam;
     }
 
-    public ArrayList<player> getMemberes() {
+    public ArrayList<player> getMembers() {
         return players;
     }
 
-    public void add(player y) {
+    public void afegir(player y) {
 
-        this.players.add(y);
+        if (players.contains(y)) {
+            return;
+        }
+
+        players.add(y);
+        y.afegir(this);
+
+    }
+
+    public void eliminar(player y) {
+
+        if (players.contains(y)) {
+            players.remove(y);
+            y.eliminar(this);
+        }
 
     }
 
@@ -88,7 +103,7 @@ public class team implements Iterable, Cloneable {
             equipo = equipo + jugadores + "\n";
         };
 
-        return "********\n*\n" + "Equip \"" + this.nameTeam
+        return "********\n*\n" + "Equip \"" + nameTeam
                 + "\":\n*\n" + equipo + "*\n********";
     }
 
