@@ -1,5 +1,9 @@
 package joc;
 
+import Excepcions.attackMortException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Miguel
@@ -20,6 +24,16 @@ public class warrior extends player {
         System.out.println("CONSTRUCTOR -> he creat un warrior");
     }
 
+    public warrior(String name, int attackPoints, int defensePoints) {
+        super(name, attackPoints, defensePoints);
+        
+        dfInicial = defensePoints;
+        atInicial = attackPoints;
+
+        System.out.println("CONSTRUCTOR -> he creat un warrior");
+    }
+    
+
     @Override
     protected void hit(int attackPoints) {
         difAD = attackPoints - this.defensePoints;
@@ -28,7 +42,9 @@ public class warrior extends player {
             attackPoints = 0;
             //this.defensePoints = 0;
         }
-        super.hit(attackPoints);
+       
+            super.hit(attackPoints);
+        
         attackPoints = atInicial;
         defensePoints = dfInicial;
     }

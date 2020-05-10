@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/joc/player.java</file>
-            <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/joc/item.java</file>
+            <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/Excepcions/attackMortException.java</file>
+            <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/Excepcions/numeroJugadorsException.java</file>
+            <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/Excepcions/afegirEquipJugadorException.java</file>
+            <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/Excepcions/equipExistException.java</file>
             <file>file:/home/damsp/Escritorio/rol%20git/Joc_de_rol/Joc_de_rol/src/inici/Inici.java</file>
         </group>
     </open-files>

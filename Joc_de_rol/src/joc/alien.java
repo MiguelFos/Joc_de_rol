@@ -1,5 +1,9 @@
 package joc;
 
+import Excepcions.attackMortException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Miguel
@@ -30,12 +34,38 @@ public class alien extends player {
         reinicioLife = life;
     }
 
+    public alien(String name, int attackPoints, int defensePoints) {
+        super(name, attackPoints, defensePoints);
+        
+        System.out.println("CONSTRUCTOR -> he creat un alien");
+
+        attPInicial = this.attackPoints;
+        dfPInicial = this.defensePoints;
+        aIra = this.attPInicial + 3;//Ataque con ira
+        dIra = this.dfPInicial - 3;//Defensa con ira
+        if (dIra < 0) {
+            dIra = 0;
+            aIra=this.attPInicial+defensePoints;
+        }
+
+        reinicioLife = life;
+    }
+    
+    
+
     @Override
-    public void attack(player y) {
+    public void attack(player y){
 
         this.modeEmbogir();
 
-        super.attack(y);
+        
+        try {
+            super.attack(y);
+        } catch (attackMortException ex) {
+            System.err.println(ex.getMessage());
+        }
+       
+        
 
     }
 

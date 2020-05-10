@@ -5,11 +5,13 @@
  */
 package joc;
 
+import java.util.Iterator;
+
 /**
  *
  * @author damsp
  */
-public class item {
+public class item{
     protected String name;
     protected int attackBonus;
     protected int defenseBonus;
@@ -27,6 +29,11 @@ public class item {
         
         return name+" BA:"+attackBonus+" / BD:"+defenseBonus;
     }
+
+    public String getName() {
+        return name;
+    }
+
     
     
     

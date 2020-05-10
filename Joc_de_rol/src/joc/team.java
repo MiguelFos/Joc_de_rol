@@ -13,6 +13,10 @@ public class team implements Iterable, Cloneable {
     private String nameTeam;
 
     private ArrayList<player> players;
+    
+    public team() {
+        
+    }
 
     public team(String name) {
         this.nameTeam = name;
@@ -61,18 +65,20 @@ public class team implements Iterable, Cloneable {
             return players.get(posicio++);
         }
 
-        @Override
-        public void remove() {
-
-            int eliminar = posicio - 1;
-            if (eliminar < 0) {
-                return;
-            }
-            if (eliminar < players.size()) {
-                players.remove(posicio - 1);
-            }
-
-        }
+//        @Override
+//        
+//        public void remove() {
+//
+//            int eliminar = posicio - 1;
+//            
+//            if (eliminar < 0) {
+//                return;
+//            }
+//            if (eliminar < players.size()) {
+//                players.remove(posicio-1);
+//            }
+//
+//        }
 
         public void consulta() {
 
@@ -86,6 +92,11 @@ public class team implements Iterable, Cloneable {
 
             System.out.println(posicio - 1);
         }
+
+//        @Override
+//        public void remove() {
+//            Iterator.super.remove(); //To change body of generated methods, choose Tools | Templates.
+//        }
 
     }
 

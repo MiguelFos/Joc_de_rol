@@ -1,5 +1,6 @@
 package joc;
 
+import Excepcions.attackMortException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -22,6 +23,20 @@ abstract public class player implements Iterable, Cloneable {
     public player() {
     }
 
+    public player(String name, int attackPoints, int defensePoints) {
+        this.name = name;
+        this.attackPoints = attackPoints;
+        this.defensePoints = defensePoints;
+        this.life = 100;
+
+        this.teams = new ArrayList<>();
+
+        reinicioLife = 100;
+
+        this.items = new ArrayList<>();
+
+    }
+
     public player(String name, int attackPoints, int defensePoints, int life) {
         this.name = name;
         this.attackPoints = attackPoints;
@@ -34,6 +49,10 @@ abstract public class player implements Iterable, Cloneable {
 
         this.items = new ArrayList<>();
 
+    }
+
+    public ArrayList<team> getTeams() {
+        return teams;
     }
 
     public String getName() {
@@ -68,7 +87,7 @@ abstract public class player implements Iterable, Cloneable {
                 + " (pertany a " + teams.size() + " equips)\n" + litem;
     }
 
-    public void attack(player y) {
+    public void attack(player y) throws attackMortException{
         System.out.println("-----------------------------------------------------------");
         System.out.println("");
         System.out.println("//      ABANS DE L'ATAC:");
@@ -76,14 +95,23 @@ abstract public class player implements Iterable, Cloneable {
         System.out.println(y);
 
         System.out.println("//      ATAC:");
-        //int BAAA = aplicarBonusAttack(y);
-
-        y.hit(this.aplicarBonusAttack());
         
-        if (this.life > 0) {
-            this.hit(y.aplicarBonusAttack());
-           
+        //comprobarVida(y);
+        y.hit(this.aplicarBonusAttack());
+//        if (y.life > 0) {
+//            if (this.life > 0) {
+//        //comprobarVida(this);
+//        this.hit(y.aplicarBonusAttack());
+////
+//            }
+//        }
+
+        if (y.life<=0) {
+            throw new attackMortException("No torna el colp per que está mort.");
+        }else{
+         this.hit(y.aplicarBonusAttack());   
         }
+
         System.out.println("");
         System.out.println("//      DESPRES DE L'ATAC:");
         System.out.println(this);
@@ -94,43 +122,56 @@ abstract public class player implements Iterable, Cloneable {
 
     }
 
+//    public void comprobarVida(player p) throws attackMort {
+//        if (p.life <= 0) {
+//            throw new attackMort("El jugador no pot atacar per q esta mort");
+//        } else {
+//
+//            if (this.life <= 0) {
+//                throw new attackMort("El jugador no pot atacar per q esta mort");
+//
+//            }
+//        }
+//
+//    }
+
     public int aplicarBonusAttack() {
         int BA = 0;//Bonus attack sense attackpoints
         int BAAA = 0;//Bonus attack amb attackpoints
-        for (int i=0;i<this.items.size();i++) {
+        for (int i = 0; i < this.items.size(); i++) {
             BA = BA + this.items.get(i).attackBonus;
         }
         BAAA = this.attackPoints + BA;
         return BAAA;
     }
-    
+
     public int aplicarBonusDefense() {
         int BD = 0;//Bonus defense sense defensepoints
         int BDAA = 0;//Bonus defense amb defensepoints
-        for (int i=0;i<items.size();i++) {
+        for (int i = 0; i < items.size(); i++) {
             BD = BD + this.items.get(i).defenseBonus;
         }
         BDAA = this.defensePoints + BD;
         return BDAA;
     }
+
     protected void hit(int attackpoints) {
-        
-        int bonusD=this.aplicarBonusDefense();//defensePoints + el bonus de defensa
-        if (bonusD<0) {
-            bonusD=0;
+
+        int bonusD = this.aplicarBonusDefense();//defensePoints + el bonus de defensa
+        if (bonusD < 0) {
+            bonusD = 0;
         }
-        
-        
+
         if (this.life <= 0) {
             System.out.println("No hi ha atac per que no hi ha punts de vida");
         } else {
             System.out.println(this.name + " és colpejat amb " + attackpoints + " punts i es defén amb " + bonusD + ". Vides: " + this.life + " - "
-                    +(attackpoints - bonusD) + " = " + (this.life - (attackpoints - bonusD)));
+                    + ((attackpoints - bonusD) < 0 ? 0 : (attackpoints - bonusD)) + " = " + (this.life - ((attackpoints - bonusD) < 0 ? 0 : (attackpoints - bonusD))));
             if ((this.life - (attackpoints - bonusD)) > 0) {
             } else {
                 System.out.println("El jugador " + this.name + " ha muerto.");
             }
-            this.life = this.life - (attackpoints - bonusD);
+            this.life = this.life - ((attackpoints - bonusD) < 0 ? 0 : (attackpoints - bonusD));
             if (this.life < 0) {
                 this.life = 0;
             }
@@ -167,17 +208,26 @@ abstract public class player implements Iterable, Cloneable {
 
     public void afegirItem(item I) {
         if (I.propietari == false) {
-            items.add(I);
+            this.items.add(I);
             I.propietari = true;
         } else {
+            System.out.println("");
             System.out.println("No es pot asignar " + I.name + " a " + this.name + ", ja te propietari");
+            System.out.println("");
         }
 
     }
 
+    public ArrayList<item> getItems() {
+        return items;
+    }
+
     public void eliminarItem(item I) {
-        items.remove(I);
-        I.propietari = false;
+        if (items.contains(I)) {
+            this.items.remove(I);
+
+        }
+
     }
 
     @Override
@@ -199,17 +249,20 @@ abstract public class player implements Iterable, Cloneable {
             return teams.get(posicio++);
         }
 
-        @Override
-        public void remove() {
-            int eliminar = posicio - 1;
-            if (eliminar < 0) {
-                return;
-            }
-            if (eliminar < teams.size()) {
-                teams.remove(posicio - 1);
-            }
-        }
-
+//        @Override
+//        public void remove() {
+//            int eliminar = posicio - 1;
+//            if (eliminar < 0) {
+//                return;
+//            }
+//            if (eliminar < teams.size()) {
+//                teams.remove(posicio-1);
+//            }
+//        }
+//        @Override
+//        public void remove() {
+//            Iterator.super.remove(); //To change body of generated methods, choose Tools | Templates.
+//        }
         public void consulta() {
 
             int consulta = posicio - 1;
